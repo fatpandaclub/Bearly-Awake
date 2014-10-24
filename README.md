@@ -1,1 +1,10 @@
-YOzzzzzz!
+# BEARLY AWAKE
+
+## MEXIF2014 FINAL PROJECT
+
+## CHRISTIAN SIVERTSEN, PHILIP RAMSBY, NINA CECILIE HØJHOLDT
+
+
+***
+
+- more info coming soon -
