@@ -1,0 +1,32 @@
+
+=======================
+=      Time line      =
+=======================
+
+
+
+- User steps into box -
+
+1. Get person's weight (~5 second average)
+
+2. Send it to Processing, to generate art based on that
+
+
+- User looks into VR machine -
+
+
+3. [Maybe] Countdown is shown on display
+
+4. Cool generative art is shown, much wow
+
+5. 10 seconds later, the camera grabs a photo
+
+6. Photo is manipulated by processing
+
+- User steps out of the box -
+
+- User presses button -
+
+7. Latest generated photo is sent to printer
+
+8. wow
