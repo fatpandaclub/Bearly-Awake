@@ -4,7 +4,7 @@ import processing.pdf.*;
 Capture cam;
 
 void setup() {
-  size(640, 480);
+  size(641, 481);
   
   
   String[] cameras = Capture.list();
@@ -15,12 +15,12 @@ void setup() {
   } else {
     println("Available cameras:");
     for (int i = 0; i < cameras.length; i++) {
-      println(cameras[i]);
+      println(i+": "+cameras[i]);
     }
     
     // The camera can be initialized directly using an 
     // element from the array returned by list():
-    cam = new Capture(this, cameras[1]);
+    cam = new Capture(this, cameras[29]);
     //beginRecord(PDF, "line.pdf"); 
     cam.start();     
   }      

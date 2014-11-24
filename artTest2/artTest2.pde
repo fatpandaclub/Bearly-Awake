@@ -1,9 +1,60 @@
+import processing.video.*;
+import processing.pdf.*;
+
+
 int angle, panelW, panelH, triangleW, triangleH, panelCountX, panelCountY, hue, x, y; 
 boolean increment = true;
 
 ArrayList<Panel> panels;
 
+PGraphics pg; 
 
+Capture cam;
+
+void setup() {
+  size(1920, 1080);
+  
+  String[] cameras = Capture.list();
+  
+  if (cameras.length == 0) {
+    println("There are no cameras available for capture.");
+    exit();
+  } else {
+    println("Available cameras:");
+    for (int i = 0; i < cameras.length; i++) {
+      println(cameras[i]);
+    }
+    
+    // The camera can be initialized directly using an 
+    // element from the array returned by list():
+    cam = new Capture(this, cameras[1]);
+    //beginRecord(PDF, "line.pdf"); 
+    cam.start();     
+  }
+
+  pg = createGraphics(640,480); 
+}
+
+void draw() {
+  
+  if (cam.available() == true) {
+    cam.read();
+  }
+  pg.beginDraw();
+  pg.image(cam, 0, 0);
+  pg.endDraw();
+  // The following does the same, and is faster when just drawing the image
+  // without any additional resizing, transformations, or tint.
+  //set(0, 0, cam);
+}
+
+void keyPressed() {
+  //endRecord();  
+  pg.save("SharePic/picture.jpg"); 
+  println("hej");
+}
+
+/*
 void setup() {
   size(800, 800, P3D);
   colorMode(HSB);
@@ -64,5 +115,6 @@ void draw() {
     popMatrix();
   }
   
+  
 }
-
+*/
