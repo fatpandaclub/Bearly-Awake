@@ -2,14 +2,23 @@
 
 HX711 scale(A1, A0);
 
+int buttonPin = 0;
+int buttonVal;
 void setup() {
   Serial.begin(38400);
   scale.set_scale(39887.75f);
   scale.tare();
+  pinMode(buttonPin, INPUT_PULLUP);
 }
 
 void loop() {
-  Serial.println(scale.get_units(10));
+  Serial.println(scale.get_units(5));
+  
+  buttonVal = digitalRead(buttonPin);
+  if( buttonVal == LOW) {
+  Serial.println("9999");
+  } 
+  //delay(50);
 }
 
 /*

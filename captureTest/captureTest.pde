@@ -20,7 +20,7 @@ void setup() {
     
     // The camera can be initialized directly using an 
     // element from the array returned by list():
-    cam = new Capture(this, cameras[29]);
+    cam = new Capture(this, cameras[10]);
     //beginRecord(PDF, "line.pdf"); 
     cam.start();     
   }      
