@@ -19,13 +19,13 @@ UDP udp;
 // Weight calculations
 float weight = 1;
 float weight_before = 1;
-String weight_temp_str = "0";
+String weight_temp_str = "0"; 
 float weight_temp_fl = 0.0f;
 float[] weight_arr;
 
 // Counter for taking a picture
 int countUp; 
-int countdownTime = 5000;
+int countdownTime = 12000;
 
 boolean counting = false;
 boolean hasBeenZero = true;
@@ -64,7 +64,7 @@ void setup() {
 
   // Camera setup
   String[] cameras = Capture.list();
-  cam = new Capture(this, cameras[29]);
+  cam = new Capture(this, cameras[5]);
   cam.start();
 
 
@@ -123,11 +123,11 @@ void draw() {
 
   // If not already countdown and weight has been zero since last 
   if (counting == false && hasBeenZero == true) {
-    println("jeg slap igennem de to booleans");
+    //println("jeg slap igennem de to booleans");
     
     // If last two weights has been more than 20kg
     if (weight_arr[0] > 20 && weight_arr[1] > 20) {
-      println("Vægten er god fin!");
+      //println("Vægten er god fin!");
       
       // Start countdown
       countUp = millis();
@@ -149,6 +149,7 @@ void draw() {
     // Send weight via UDP
     message   = str(weight);
     udp.send( message, ip, port);
+    
   }
   
 
@@ -160,10 +161,10 @@ void draw() {
 
   // If the last two weights has been below zero, set hasBeenZero to true
   if (weight_arr[0] < 20 && weight_arr[1] < 20 ) {
-    println("Pyyh, nu gik hun endelig af!");
+    //println("Pyyh, nu gik hun endelig af!");
     hasBeenZero = true;
   } else {
-    println("Hun er ikke gået af endnu");
+    //println("Hun er ikke gået af endnu");
     //hasBeenZero = false;
   }
 
@@ -204,6 +205,8 @@ void glitch() {
     alpha = map(alpha, 0, 1, 0, 255);
     rec_color = color(red, green, blue, alpha);
   }
+  
+  tintz(rec_color);
 
   for (int i = 0; i < iterations; i++) {
     pixStartX = int(random(0, width));
@@ -220,9 +223,9 @@ void glitch() {
     //println(pixStartX+" "+pixStartY);
     blend(temp_img, 0, 0, pixW, pixH, pixStartX, pixStartY, pixW, pixH, DIFFERENCE);
   }
-  tint(rec_color);
-  image(img, 0, 0);
-  blend(img, 0, 0, width, height, 0, 0, width, height, OVERLAY);
+  
+  //image(img, 0, 0);
+  blend(img, 0, 0, width, height, 0, 0, width, height, HARD_LIGHT);
   println("hej!");
 
 
@@ -234,6 +237,31 @@ void glitch() {
   pdf.endDraw();
 }
 
+void tintz(color c) {
+
+  loadPixels();
+  for(int x = 0; x < width; x++) {
+    for(int y = 0; y < height; y++) {
+      
+      int location = x + y * width;
+      float red = red(pixels[location]);
+      float green = green(pixels[location]);
+      float blue = blue(pixels[location]);
+      
+      red = red * (red(c) / 255);
+      green = green * (green(c) / 255);
+      blue = blue * (blue(c) / 255);
+      
+      
+      //println(red+green+blue);
+      
+      pixels[location] = color(red, green, blue);
+      
+    }
+  }
+  updatePixels();
+
+}
 
 // If a key is pressed, print the current PDF
 void sendToPrint() {
