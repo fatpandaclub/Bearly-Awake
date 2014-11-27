@@ -5,7 +5,7 @@ import hypermedia.net.*;
 import processing.serial.*;
 
 String params[] = { 
-  "/Applications/Adobe Reader", "/p", "/Users/Nina/Documents/0_Uni/5. semester/Experimental Interaction/FINAL/Processing/FinalProjectCollected/output.pdf"
+  "C:\\Program Files (x86)\\Foxit Software\\Foxit Reader\\FoxitReader.exe", "/p", "C:\\Users\\Christian\\Dropbox\\Skole\\Mexi\\FinalProject\\FinalProjectCollected\\output.pdf"
 };
 
 // UDP
@@ -27,9 +27,8 @@ float[] weight_arr;
 int countUp; 
 int countdownTime = 5000;
 
-boolean once = true;
-boolean canTakePicture = true;
 boolean counting = false;
+boolean hasBeenZero = true;
 
 
 // Serial
@@ -53,6 +52,7 @@ PImage temp_img;
 PImage overlay_img;
 PImage mover_img;
 
+// Counter for the weight array
 int counter = 0;
 
 void setup() {
@@ -61,13 +61,13 @@ void setup() {
 
   // Set standard color
   rec_color = color(0, 100, 200, 200);
-  
+
   // Camera setup
   String[] cameras = Capture.list();
-  cam = new Capture(this, cameras[5]);
+  cam = new Capture(this, cameras[29]);
   cam.start();
 
-  
+
   weight_arr = new float[2];
 
   // UDP setup
@@ -90,12 +90,17 @@ void draw() {
 
   //Listen to Arduino
   //println(myPort.available());
+  
   if (myPort.available() > 0 ) {
     try {
+      // Get weight as string
       weight_temp_str = myPort.readStringUntil(lf);
       if (weight_temp_str != null) {
+        //Parse to float
         weight_temp_fl = Float.parseFloat(weight_temp_str);
         println(weight_temp_fl);
+        
+        // If it's not a button press
         if (weight_temp_fl != 9999) {
 
           //println("Weight received: " + weight_temp);
@@ -103,6 +108,7 @@ void draw() {
           weight_arr[counter] = weight;
           counter++;
         } else {
+          // Print
           sendToPrint();
           println("Jeg printer!");
         }
@@ -115,38 +121,50 @@ void draw() {
 
   // Countdown start
 
-
-  if (counting == false) {
-    for (int i = 0; i < weight_arr.length; i++) {
-
-      if (weight_arr[i] < 20 ) {
-        canTakePicture = false;
-        println("Pic ok!");
-      }
-      else {
-        canTakePicture = true;
+  // If not already countdown and weight has been zero since last 
+  if (counting == false && hasBeenZero == true) {
+    println("jeg slap igennem de to booleans");
+    
+    // If last two weights has been more than 20kg
+    if (weight_arr[0] > 20 && weight_arr[1] > 20) {
+      println("Vægten er god fin!");
+      
+      // Start countdown
+      countUp = millis();
+      counting = true;
+      hasBeenZero = false;
+      println("Countdown started");
+      
+      //glitch();
+      //counting = false;
+      
+      // Send new weight to Unity
+//      message   = str(weight);
+//      udp.send( message, ip, port);
     }
   }
 
-  if (canTakePicture && !counting) {
-    countUp = millis();
-    once = false;
-    canTakePicture = false;
-    counting = true;
-    println("Countdown started");
-  }
-
+  
   if (abs(weight_before - weight) > 20) {
     // Send weight via UDP
     message   = str(weight);
     udp.send( message, ip, port);
   }
+  
 
   // Take picture when countdown ends
-  if (millis() - countUp >= countdownTime && once == false) {
+ if (millis() - countUp >= countdownTime && counting) {
     glitch();
-    once = true;
-    canTakePicture = true;
+    counting = false;
+  }
+
+  // If the last two weights has been below zero, set hasBeenZero to true
+  if (weight_arr[0] < 20 && weight_arr[1] < 20 ) {
+    println("Pyyh, nu gik hun endelig af!");
+    hasBeenZero = true;
+  } else {
+    println("Hun er ikke gået af endnu");
+    //hasBeenZero = false;
   }
 
   //Save the old weight
