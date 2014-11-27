@@ -5,30 +5,43 @@ import hypermedia.net.*;
 import processing.serial.*;
 
 String params[] = { 
-  "C:\\Program Files (x86)\\Foxit Software\\Foxit Reader\\FoxitReader.exe", "/p", "C:\\Users\\Christian\\Dropbox\\Skole\\Mexi\\FinalProject\\FinalProjectCollected\\output.pdf"
+  "/Applications/Adobe Reader", "/p", "/Users/Nina/Documents/0_Uni/5. semester/Experimental Interaction/FINAL/Processing/FinalProjectCollected/output.pdf"
 };
-String val;
+
+// UDP
 String message;
 String messageReceived;
 String ip;
+int port;
+UDP udp; 
+
+
+// Weight calculations
 float weight = 1;
 float weight_before = 1;
 String weight_temp_str = "0";
 float weight_temp_fl = 0.0f;
 float[] weight_arr;
+
+// Counter for taking a picture
 int countUp; 
 int countdownTime = 5000;
-int port;
+
 boolean once = true;
-boolean canTakePicture = false;
+boolean canTakePicture = true;
 boolean counting = false;
+
+
+// Serial
+Serial myPort; 
+int lf = 10;
+
+// Camera and image creation stuff
 Capture cam;  
-UDP udp; 
 PGraphics pdf;
 PGraphics img_creator;
-Serial myPort; 
 
-/* glitch */
+// Glitch art
 PImage img;
 int pixStartX; 
 int pixStartY;
@@ -40,27 +53,31 @@ PImage temp_img;
 PImage overlay_img;
 PImage mover_img;
 
-int lf = 10;
-
 int counter = 0;
 
 void setup() {
   size(640, 480, P2D);
   pdf = createGraphics(640, 480, PDF, "output.pdf");
 
+  // Set standard color
   rec_color = color(0, 100, 200, 200);
+  
+  // Camera setup
   String[] cameras = Capture.list();
   cam = new Capture(this, cameras[5]);
   cam.start();
 
+  
   weight_arr = new float[2];
 
+  // UDP setup
   udp = new UDP( this, 6000 );
   //udp.log( true );
   ip = "192.168.1.122";
   port = 6000;
   udp.listen(true); 
 
+  // Serial setup
   myPort = new Serial(this, Serial.list()[0], 38400);
   myPort.clear();
 }
@@ -99,22 +116,19 @@ void draw() {
   // Countdown start
 
 
-
   if (counting == false) {
     for (int i = 0; i < weight_arr.length; i++) {
 
-      if (weight_arr[i] > 20 ) {
-        canTakePicture = true;
+      if (weight_arr[i] < 20 ) {
+        canTakePicture = false;
         println("Pic ok!");
       }
+      else {
+        canTakePicture = true;
     }
   }
 
-  if (weight < 20) {
-    counting = false;
-  }
-
-  if (canTakePicture) {
+  if (canTakePicture && !counting) {
     countUp = millis();
     once = false;
     canTakePicture = false;
@@ -132,6 +146,7 @@ void draw() {
   if (millis() - countUp >= countdownTime && once == false) {
     glitch();
     once = true;
+    canTakePicture = true;
   }
 
   //Save the old weight
