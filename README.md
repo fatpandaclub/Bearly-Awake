@@ -5,7 +5,7 @@
 
 CHRISTIAN SIVERTSEN, PHILIP RAMSBY, NINA CECILIE HØJHOLDT
 
--more info coming soon-
+Link to Unity part: https://github.com/fatpandaclub/Bearly-Awake-Unity
 
 
 ░░░░░░░░░▄░░░░░░░░░░░░░░▄░░░░
